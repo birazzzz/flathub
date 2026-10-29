@@ -1,0 +1,30 @@
+id: com.fynepdf.FynePDF
+runtime: org.kde.Platform
+runtime-version: '6.11'
+sdk: org.kde.Sdk
+base: io.qt.qtwebengine.BaseApp
+base-version: '6.11'
+command: fynepdf
+finish-args:
+  - --device=dri
+  - --env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess
+  - --share=ipc
+  - --share=network
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=cups
+  - --filesystem=home
+  - --env=TMPDIR=/var/tmp
+cleanup-commands:
+  - /app/cleanup-BaseApp.sh
+modules:
+  - name: fynepdf
+    buildsystem: simple
+    build-commands:
+      - cp -a files/. /app/
+      - sh trim-webengine.sh /app
+      - python3 check-release.py /app/bin/fynepdf
+    sources:
+      - type: archive
+        url: https://github.com/birazzzz/fynepdf-linux/releases/download/v1.0.0/FynePDF-1.0.0-x86_64.tar.xz
+        sha256: f285c8d49066a8b3aa5ab93bd46f0ccd02eb2b7ee692fd45bc9d606ffd0f73d4
